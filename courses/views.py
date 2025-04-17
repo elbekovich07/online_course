@@ -22,10 +22,7 @@ class CourseView(TemplateView):
         return context
 
 
-class TeacherView(TemplateView):
-    template_name = 'courses/teacher.html'
-
-
-
 class AboutView(TemplateView):
     template_name = 'courses/about.html'
+
+
