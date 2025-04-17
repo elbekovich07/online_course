@@ -1,10 +1,31 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView
 
-def index(request):
-    return render(request, 'courses/index.html')
+from courses.models import Course
 
-def course(request):
-    return render(request, 'courses/course.html')
 
-def teacher(request):
-    return render(request, 'courses/teacher.html')
+class IndexView(TemplateView):
+    template_name = 'courses/index.html'
+
+
+class CourseView(TemplateView):
+    template_name = 'courses/course.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['courses'] = Course.objects.all()
+
+        course_slug = self.kwargs.get('course_slug')
+        if course_slug:
+            context['course'] = Course.objects.filter(course_slug=course_slug).first()
+
+        return context
+
+
+class TeacherView(TemplateView):
+    template_name = 'courses/teacher.html'
+
+
+
+class AboutView(TemplateView):
+    template_name = 'courses/about.html'
