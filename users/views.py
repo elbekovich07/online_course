@@ -1,8 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 
-from users.forms import *
+from users.forms import LoginForm, RegisterForm
+
+
+# Create your views here.
+
 
 
 def login_page(request):
@@ -11,21 +17,39 @@ def login_page(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(request, username=cd['email'], password=cd['password'])
-            if user is not None:
+            email = cd['email']
+            password = cd['password']
+
+            try:
+                user_obj = User.objects.get(email=email)
+                user = authenticate(request, username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                user = None
+
+            if user:
                 if user.is_active:
                     login(request, user)
-                    messages.success(request, "Successfully logged in.")
-                    return redirect('index')
+
+                    send_mail(
+                        subject='Login Notification',
+                        message=f'Dear {user.username},\n\nYou have successfully logged into your account.',
+                        from_email=None,
+                        recipient_list=[user.email],
+                        fail_silently=True,
+                    )
+
+                    return redirect('courses:index')
                 else:
-                    messages.error(request, "Your account has been disabled.")
+                    messages.error(request, 'Disabled account')
             else:
-                messages.error(request, "Username or password is incorrect.")
+                messages.error(request, 'Email yoki parol noto‘g‘ri!')
+
     return render(request, 'users/login_register/login_register.html', {'form': form})
 
 
 def register_page(request):
     form = RegisterForm()
+
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -33,14 +57,22 @@ def register_page(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             login(request, user)
-            messages.success(request, "Registration successful.")
-            return redirect('index')
+
+            send_mail(
+                subject='Welcome to ECourses!',
+                message=f"Hello {user.username},\n\nYou have successfully registered on ECourses. We're glad to have you!",
+                from_email=None,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
+
+            return redirect('courses:index')
         else:
             messages.error(request, 'Registration failed. Please correct the errors below.')
+
     return render(request, 'users/login_register/login_register.html', {'form': form})
 
 
 def logout_page(request):
     logout(request)
-    messages.success(request, "You have been logged out.")
-    return redirect('index')
+    return redirect('courses:index')

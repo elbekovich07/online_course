@@ -1,0 +1,16 @@
+{% extends 'courses/base/base.html' %}
+{% block course_detail_content %}
+    <div class="container py-5">
+        <h1>{{ course.title }}</h1>
+        <p>{{ course.description }}</p>
+
+        {% if course.video %}
+            <video width="100%" height="auto" controls>
+                <source src="{{ course.video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% else %}
+            <p>No video available for this course.</p>
+        {% endif %}
+    </div>
+{% endblock %}
