@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.text import slugify
@@ -30,7 +32,7 @@ class Course(models.Model):
     image = models.ImageField(upload_to='courses/images/')
     video = models.FileField(upload_to='courses/videos/', null=True, blank=True)
     students_count = models.PositiveIntegerField(default=0)
-    duration = models.DurationField()
+    duration = models.DurationField(blank=True, null=True)
     rating = models.FloatField(default=0.0)
     reviews_count = models.PositiveIntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -44,6 +46,8 @@ class Course(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+
 
     @property
     def student_count(self):
