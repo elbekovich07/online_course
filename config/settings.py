@@ -53,6 +53,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'config.middlewares.SimpleMiddleware',
+    'config.middlewares.RequestLoggingMiddleware',
+    'config.middlewares.user_agent_detection_middleware',
+    'config.middlewares.AutoLogoutMiddleWare',
 
 ]
 
