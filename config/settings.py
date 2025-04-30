@@ -179,10 +179,12 @@ SOCIAL_AUTH_GITHUB_KEY = os.getenv('SOCIAL_AUTH_GITHUB_KEY')
 SOCIAL_AUTH_GITHUB_SECRET = os.getenv('SOCIAL_AUTH_GITHUB_SECRET')
 
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://onlinecourse-production-8d40.up.railway.app'
+]
 
-CSRF_TRUSTED_ORIGINS=[
-'https://onlinecourse-production-8d40.up.railway.app/']
-
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 
